@@ -45,6 +45,17 @@ class DoublyLinkedList:
 		self.tail = node
 		self.length = 1 if node is not None else 0
 
+	def __str__(self):
+		current_node = self.head
+		values = ""
+		while current_node:
+			if current_node is self.tail:
+				values += str(current_node.value)
+			else:
+				values += str(current_node.value) + ", " 
+			current_node = current_node.next
+		return f'DoublyLinkedList: values: [{values}], length: {self.length}'
+
 	def __len__(self):
 		return self.length
 
@@ -140,3 +151,7 @@ class DoublyLinkedList:
 				largest = current_node.value
 			current_node = current_node.next
 		return largest
+
+
+# dll = DoublyLinkedList(ListNode(1))
+# print(dll)
