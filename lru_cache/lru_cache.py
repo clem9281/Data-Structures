@@ -15,14 +15,6 @@ class LRUCache:
         self.cache = Queue()
         self.dictionary = {}
         self.length = 0
-    # finds an element in the queue and makes it the most recent element
-    def find_element_and_make_most_recent(self, key, value):
-        current_node = self.cache.storage.head
-        while (current_node):
-            if key in current_node.value:
-                current_node.value = {key, value}
-                self.cache.storage.move_to_front(current_node)
-            current_node = current_node.next
 
     """
     Retrieves the value associated with the given key. Also
@@ -33,9 +25,11 @@ class LRUCache:
     """
     def get(self, key):
         if key in self.dictionary:
-            value = self.dictionary[f'{key}']
-            self.find_element_and_make_most_recent(key, value)
-            return value
+            node = self.dictionary[key]
+            print(1, node)
+            self.cache.storage.move_to_front(node)
+            # print('aaa',node.value[key])
+            return node.value[key]
         else:
             return None
     
@@ -51,9 +45,9 @@ class LRUCache:
     """
     def set(self, key, value):
         if key in self.dictionary:
-            self.dictionary[key] = value
-            current_node = self.cache.storage.head
-            self.find_element_and_make_most_recent(key, value)
+            node = self.dictionary[key]
+            node.value = {key: value}
+            self.cache.storage.move_to_front(node)
         else:
             self.cache.enqueue({ key: value})
             self.length += 1
@@ -61,7 +55,7 @@ class LRUCache:
                 removed_item = self.cache.dequeue()
                 for dictionary_key in removed_item:
                     del self.dictionary[dictionary_key]
-            self.dictionary[key] = value
+            self.dictionary[key] = self.cache.storage.head
             
 cache = LRUCache(3)
 cache.set('item1', 'a')
@@ -70,7 +64,7 @@ cache.set('item3', 'c')
 print(cache.cache, cache.dictionary)
 cache.set('item3', 'd')
 print(cache.cache, cache.dictionary)
-cache.set('item4', 'z')
+cache.set('item3', 'z')
 print(cache.cache, cache.dictionary)
 
 print(cache.get('item2'))
