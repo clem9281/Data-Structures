@@ -1,3 +1,7 @@
+import sys
+sys.path.append('../queue_and_stack')
+from dll_queue import Queue
+# print(Queue)
 class LRUCache:
     """
     Our LRUCache class keeps track of the max number of nodes it
@@ -7,7 +11,18 @@ class LRUCache:
     to every node stored in the cache.
     """
     def __init__(self, limit=10):
-        pass
+        self.limit = limit
+        self.cache = Queue()
+        self.dictionary = {}
+        self.length = 0
+    # finds an element in the queue and makes it the most recent element
+    def find_element_and_make_most_recent(self, key, value):
+        current_node = self.cache.storage.head
+        while (current_node):
+            if key in current_node.value:
+                current_node.value = {key, value}
+                self.cache.storage.move_to_front(current_node)
+            current_node = current_node.next
 
     """
     Retrieves the value associated with the given key. Also
@@ -17,8 +32,13 @@ class LRUCache:
     key-value pair doesn't exist in the cache.
     """
     def get(self, key):
-        pass
-
+        if key in self.dictionary:
+            value = self.dictionary[f'{key}']
+            self.find_element_and_make_most_recent(key, value)
+            return value
+        else:
+            return None
+    
     """
     Adds the given key-value pair to the cache. The newly-
     added pair should be considered the most-recently used
@@ -30,4 +50,27 @@ class LRUCache:
     the newly-specified value.
     """
     def set(self, key, value):
-        pass
+        if key in self.dictionary:
+            self.dictionary[key] = value
+            current_node = self.cache.storage.head
+            self.find_element_and_make_most_recent(key, value)
+        else:
+            self.cache.enqueue({ key: value})
+            self.length += 1
+            if self.length > self.limit:
+                removed_item = self.cache.dequeue()
+                for dictionary_key in removed_item:
+                    del self.dictionary[dictionary_key]
+            self.dictionary[key] = value
+            
+cache = LRUCache(3)
+cache.set('item1', 'a')
+cache.set('item2', 'b')
+cache.set('item3', 'c')
+print(cache.cache, cache.dictionary)
+cache.set('item3', 'd')
+print(cache.cache, cache.dictionary)
+cache.set('item4', 'z')
+print(cache.cache, cache.dictionary)
+
+print(cache.get('item2'))
