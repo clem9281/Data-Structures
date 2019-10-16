@@ -1,7 +1,7 @@
-# import sys
-# sys.path.append('../queue_and_stack')
-# from dll_queue import Queue
-# from dll_stack import Stack
+import sys
+sys.path.append('../queue_and_stack')
+from dll_queue import Queue
+from dll_stack import Stack
 
 
 class BinarySearchTree:
@@ -9,7 +9,9 @@ class BinarySearchTree:
         self.value = value
         self.left = None
         self.right = None
-
+    def __str__(self):
+        return f"{self.value}"
+    
     # Insert the given value into the tree
     def insert(self, value):
         if not self.value:
@@ -77,11 +79,27 @@ class BinarySearchTree:
     # Print the value of every node, starting with the given node,
     # in an iterative depth first traversal
     def dft_print(self, node):
-        if node == None:
-            return
-        print(node.value)
-        self.dft_print(node.right)
-        self.dft_print(node.left)
+        # I missed the iterative part, here it is recursively :(
+        # if node == None:
+        #     return
+        # print(node.value)
+        # self.dft_print(node.right)
+        # self.dft_print(node.left)
+        #*********************************************************#
+        storage = Stack()
+        while True:
+            if node == None and storage.len() == 0:
+                break
+            if node == None:
+                node = storage.pop().left
+            else:
+                print(node.value)
+                storage.push(node)
+                node = node.right
+            
+                
+            
+            
 
     # STRETCH Goals -------------------------
     # Note: Research may be required
